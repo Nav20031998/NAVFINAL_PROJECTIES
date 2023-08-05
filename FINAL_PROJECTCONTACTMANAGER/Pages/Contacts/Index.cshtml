@@ -1,0 +1,83 @@
+﻿@page
+@model FINAL_PROJECTCONTACTMANAGER.Pages.Contacts.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        .table th, .table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+        }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+</style>
+
+<h1>List of Registered Candidates</h1>
+
+<p>
+    <a asp-page="Create">Add a new candidate</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Zip</th>
+            <th>Email</th>
+            <th>Details/Modifications</th>
+        </tr>
+    </thead>
+ 
+    <tbody>
+        @foreach (var item in Model.Contact)
+        {
+            <tr>
+
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                <td>@Html.DisplayFor(modelItem => item.City)</td>
+                <td>@Html.DisplayFor(modelItem => item.State)</td>
+                <td>@Html.DisplayFor(modelItem => item.Zip)</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+
+
+                <td>
+                    <div class="actions">
+                        @if ((await AuthorizationService.AuthorizeAsync(User, item, ContactOperations.Update)).Succeeded)
+                        {
+                            <a class="btn btn-primary" asp-page="./Edit" asp-route-id="@item.ContactId">Edit</a>
+                        }
+
+                        <a class="btn btn-info" asp-page="./Details" asp-route-id="@item.ContactId">Details</a>
+
+                        @if ((await AuthorizationService.AuthorizeAsync(User, item, ContactOperations.Delete)).Succeeded)
+                        {
+                            <a class="btn btn-danger" asp-page="./Delete" asp-route-id="@item.ContactId">Delete</a>
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+          
